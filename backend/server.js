@@ -13,7 +13,12 @@ connectDB();  // <-- ADD THIS LINE
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://YOUR-RAILWAY-DOMAIN.up.railway.app', // Add your actual Railway URL here
+    'https://*.up.railway.app' // This allows all Railway URLs
+  ],
   credentials: true
 }));
 
