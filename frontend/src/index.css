@@ -1,0 +1,42 @@
+/* Tailwind CSS imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles */
+@layer base {
+  /* Add any custom base styles here */
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  /* Custom component classes if needed */
+  .btn-primary {
+    @apply px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-sm border;
+  }
+}
+
+@layer utilities {
+  /* Custom utility classes if needed */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+}
+
+/* Keyframes for custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
