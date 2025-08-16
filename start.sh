@@ -1,7 +1,7 @@
 #!/bin/bash
-echo "Starting deployment..."
+echo 'Starting deployment...'
 cd backend
-echo "Installing backend dependencies..."
+echo 'Installing backend dependencies...'
 npm install --production
-echo "Dependencies installed, starting server..."
+echo 'Dependencies installed, starting server...'
 node server.js
