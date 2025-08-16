@@ -1,0 +1,19 @@
+# Install and build frontend
+WORKDIR /app/frontend
+RUN npm install
+RUN npm run build
+
+# Install backend dependencies
+WORKDIR /app/backend
+RUN npm install --production
+
+# Set environment
+ENV NODE_ENV=production
+ENV PORT=8080
+
+# Expose port
+EXPOSE 8080
+
+# Start backend from backend directory
+CMD ["node", "server.js"]
+"@ | Out-File -FilePath Dockerfile -Encoding UTF8 -NoNewline
