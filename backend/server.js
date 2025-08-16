@@ -1,11 +1,11 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');  // ADD THIS
+const path = require('path');
 require('dotenv').config();
 const connectDB = require('./config/database');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 10000; // Render uses 10000 by default
 
 // Connect to MongoDB
 connectDB();
@@ -13,11 +13,14 @@ connectDB();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// CORS configuration for Render
 app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:3001',
-    'https://david-workspace-production.up.railway.app', // UPDATE with your actual URL
+    'https://david-workspace.onrender.com', // Your Render URL (update after first deploy)
+    'https://*.onrender.com' // Allow all Render URLs during deployment
   ],
   credentials: true
 }));
@@ -39,6 +42,7 @@ app.use('/api/submissions', submissionRoutes);
 app.get('/api', (req, res) => {
   res.json({ 
     message: 'David Nwokoloh Workspace Backend API',
+    status: 'Running on Render!',
     endpoints: {
       assignments: '/api/assignments',
       users: '/api/users',
@@ -47,15 +51,27 @@ app.get('/api', (req, res) => {
   });
 });
 
-// SERVE FRONTEND IN PRODUCTION - ADD THIS SECTION
+// Health check endpoint for Render
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    timestamp: new Date(),
+    environment: process.env.NODE_ENV 
+  });
+});
+
+// SERVE FRONTEND IN PRODUCTION
 if (process.env.NODE_ENV === 'production') {
-  // Assuming your frontend build is in a 'frontend/build' folder
-  // Adjust the path based on your folder structure
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  // Serve static files from React build
+  const frontendPath = path.join(__dirname, '..', 'frontend', 'build');
   
-  // Handle React routing, return all requests to React app
+  console.log('Serving frontend from:', frontendPath);
+  
+  app.use(express.static(frontendPath));
+  
+  // Handle React routing - this MUST be last
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    res.sendFile(path.join(frontendPath, 'index.html'));
   });
 } else {
   // Development mode - just show API info
@@ -75,13 +91,20 @@ app.use('/api/*', (req, res) => {
 // Error handling middleware (must be last)
 app.use(errorHandler);
 
-// Start server - IMPORTANT: Bind to 0.0.0.0 for Railway
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-  if (process.env.NODE_ENV === 'production') {
-    console.log('Running in PRODUCTION mode - serving frontend');
-  } else {
-    console.log('Running in DEVELOPMENT mode');
-  }
+// Start server - Bind to 0.0.0.0 for Render
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`
+    🚀 Server running on port ${PORT}
+    📝 Environment: ${process.env.NODE_ENV || 'development'}
+    🔗 URL: ${process.env.NODE_ENV === 'production' ? 'https://david-workspace.onrender.com' : `http://localhost:${PORT}`}
+  `);
 });
 
+// Graceful shutdown for Render
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+    process.exit(0);
+  });
+});
