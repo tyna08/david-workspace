@@ -1,12 +1,19 @@
 {
-  "name": "david-nwokoloh-workspace",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "cd frontend && npm install && npm run build",
-    "start": "node backend/server.js",
-    "postinstall": "cd backend && npm install && cd ../frontend && npm install"
+  `"name`": `"david-workspace`",
+  `"version`": `"1.0.0`",
+  `"scripts`": {
+    `"install-all`": `"npm install && cd backend && npm install && cd ../frontend && npm install`",
+    `"build`": `"cd frontend && npm run build`",
+    `"start`": `"node backend/server.js`",
+    `"render-build`": `"npm run install-all && npm run build`"
   },
-  "engines": {
-    "node": ">=14.0.0"
+  `"engines`": {
+    `"node`": `">=14.0.0`"
   }
 }
+"@ | Out-File -FilePath package.json -Encoding UTF8
+
+# Commit and push
+git add package.json
+git commit -m "Add root package.json for Render"
+git push
