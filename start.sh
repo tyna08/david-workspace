@@ -2,6 +2,6 @@
 echo "Starting deployment..."
 cd backend
 echo "Installing backend dependencies..."
-npm ci || npm install
+npm install --production
 echo "Dependencies installed, starting server..."
 node server.js
