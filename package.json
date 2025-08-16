@@ -1,3 +1,6 @@
+# In your project root (C:\Users\tynan\David_NwokolohWorkspace)
+# Create root package.json
+@"
 {
   `"name`": `"david-workspace`",
   `"version`": `"1.0.0`",
